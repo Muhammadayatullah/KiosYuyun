@@ -638,7 +638,7 @@
         <div id="serviceFields">
           <div class="form-group">
             <label>Nominal (Rp)</label>
-            <input type="number" id="txAmount" min="10000" step="10000" placeholder="100000" oninput="calcTotal()">
+            <input type="number" id="txAmount" min="10000" step="10000" placeholder="0" oninput="calcTotal()">
           </div>
           <div class="form-group">
             <label>Fee / Biaya Admin (Rp)</label>
@@ -743,12 +743,13 @@ const SERVICES = [
   { key:'bpjs', label:'BPJS', icon:'🏥', color:'#14b8a6', fee:2500, flow:'out' },
   { key:'internet', label:'Internet/TV', icon:'📡', color:'#f97316', fee:2500, flow:'out' },
   { key:'topupgame', label:'Topup Game', icon:'🎮', color:'#ec4899', fee:2000, flow:'out' },
+  { key:'kartuhp', label:'Kartu Hp', icon:'📲', color:'#8b5cf6', fee:0, flow:'in' },
 ];
 
 const PRODUCTS = [
-  { key:'gas', label:'Tabung Gas', icon:'🛢️', color:'#f97316', sellPrice:165000 },
-  { key:'air', label:'Air Isi Ulang', icon:'💧', color:'#06b6d4', sellPrice:6000 },
-  { key:'kartuhp', label:'Kartu HP', icon:'📲', color:'#8b5cf6', sellPrice:20000 },
+  { key:'gas', label:'Tabung Gas', icon:'🛢️', color:'#f97316', sellPrice:20000 },
+  { key:'air', label:'Air Isi Ulang', icon:'💧', color:'#06b6d4', sellPrice:5000 },
+  //{ key:'kartuhp', label:'Kartu HP', icon:'📲', color:'#8b5cf6', sellPrice:20000 },
 ];
 
 const ALL_ITEMS = [

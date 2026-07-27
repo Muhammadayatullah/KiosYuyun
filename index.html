@@ -8,6 +8,8 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
   :root {
@@ -46,6 +48,7 @@
   .btn-secondary { background: var(--bg); color: var(--text); border: 1px solid var(--border); }
   .btn-secondary:hover { background: #e9edf3; }
   .btn-danger { background: var(--danger); color: white; }
+  .btn-success { background: var(--success); color: white; }
   .btn-sm { padding: 7px 14px; font-size: 12px; border-radius: 8px; }
   .login-hint { text-align: center; margin-top: 20px; font-size: 12px; color: var(--text-muted); padding: 10px; background: var(--primary-light); border-radius: 10px; }
 
@@ -192,6 +195,15 @@
   .tab-btn.active { background: var(--primary); color: white; border-color: var(--primary); }
   .tab-btn:hover:not(.active) { background: var(--bg); }
 
+  .report-summary { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 14px; margin-bottom: 24px; }
+  .report-card { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: white; padding: 18px; border-radius: var(--radius); box-shadow: var(--shadow-md); }
+  .report-card .label { font-size: 11px; opacity: 0.9; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
+  .report-card .value { font-size: 20px; font-weight: 800; letter-spacing: -0.5px; word-break: break-word; }
+  .report-card.green { background: linear-gradient(135deg, var(--success), #059669); }
+  .report-card.orange { background: linear-gradient(135deg, var(--accent), #ea580c); }
+  .report-card.purple { background: linear-gradient(135deg, var(--purple), #7c3aed); }
+  .report-card.red { background: linear-gradient(135deg, var(--danger), #b91c1c); }
+
   @media print { body * { visibility: hidden; } #printArea, #printArea * { visibility: visible; } #printArea { position: absolute; left: 0; top: 0; width: 100%; padding: 20px; } }
   #printArea { display: none; }
 
@@ -250,11 +262,15 @@
     .table-wrap { margin: 0 -16px; padding: 0 16px; }
     th, td { padding: 10px 8px; }
     
-    .form-group input, .form-group select { font-size: 16px; } /* Mencegah zoom iOS */
+    .form-group input, .form-group select { font-size: 16px; }
     
     .login-card { padding: 32px 24px; margin: 16px; }
     .login-brand .logo { width: 60px; height: 60px; font-size: 28px; }
     .login-brand h1 { font-size: 22px; }
+    
+    .report-summary { grid-template-columns: 1fr 1fr; gap: 10px; }
+    .report-card { padding: 14px; }
+    .report-card .value { font-size: 18px; }
   }
 </style>
 </head>
@@ -271,7 +287,7 @@
       <div class="form-group"><label>ID Kasir</label><input type="text" id="loginId" value="kasir01" required></div>
       <div class="form-group"><label>Password</label><input type="password" id="loginPass" value="123456" required></div>
       <button type="submit" class="btn btn-primary">Masuk ke Sistem</button>
-      <div class="login-hint">💡 Default: <b>kiosyuyun</b> / <b>123456</b></div>
+      <div class="login-hint">💡 Default: <b>kasir01</b> / <b>123456</b></div>
     </form>
   </div>
 </div>
@@ -285,10 +301,11 @@
     <div class="nav-section">
       <div class="nav-section-title">Menu Utama</div>
       <div class="nav-item active" onclick="showPage('dashboard', this)"><span class="icon">📊</span><span>Dashboard</span></div>
-      <div class="nav-item" onclick="showPage('layanan', this)"><span class="icon">🚀</span><span>Layanan</span></div>
+      <div class="nav-item" onclick="showPage('layanan', this)"><span class="icon">⚡</span><span>Layanan</span></div>
       <div class="nav-item" onclick="showPage('produk', this)"><span class="icon">📦</span><span>Produk</span></div>
       <div class="nav-item" onclick="showPage('analytics', this)"><span class="icon">📈</span><span>Analitik</span></div>
       <div class="nav-item" onclick="showPage('history', this)"><span class="icon">📜</span><span>Riwayat</span></div>
+      <div class="nav-item" onclick="showPage('report', this)"><span class="icon">📋</span><span>Laporan Bulanan</span></div>
     </div>
     <div class="nav-section">
       <div class="nav-section-title">Pengaturan</div>
@@ -311,7 +328,7 @@
         </div>
       </div>
       <div class="user-info">
-        <div><div class="name" id="userName">kiosyuyun</div><div class="role">Kasir Aktif</div></div>
+        <div><div class="name" id="userName">Kasir 01</div><div class="role">Kasir Aktif</div></div>
         <div class="user-avatar" id="userAvatar">K</div>
       </div>
     </div>
@@ -327,7 +344,7 @@
         </div>
         <div class="modal-balance-row">
           <div class="modal-balance-item"><div class="lbl">💰 Modal Awal</div><div class="val" id="heroModal">Rp 0</div></div>
-          <div class="modal-balance-item"><div class="lbl">📤 Total Keluar</div><div class="val out" id="heroKeluar">Rp 0</div></div>
+          <div class="modal-balance-item"><div class="lbl"> Total Keluar</div><div class="val out" id="heroKeluar">Rp 0</div></div>
           <div class="modal-balance-item"><div class="lbl">💚 Total Masuk</div><div class="val in" id="heroMasuk">Rp 0</div></div>
         </div>
       </div>
@@ -508,6 +525,38 @@
       </div>
     </div>
 
+    <!-- REPORT BULANAN -->
+    <div id="page-report" style="display:none;">
+      <div class="section-card">
+        <div class="section-header">
+          <div>
+            <div class="section-title">📋 Laporan Bulanan</div>
+            <div class="section-subtitle">Rekap transaksi, omzet, dan modal per bulan</div>
+          </div>
+        </div>
+        
+        <div style="display:flex; gap:12px; margin-bottom:20px; flex-wrap:wrap;">
+          <div class="form-group" style="flex:1; min-width:200px; margin:0;">
+            <label>Pilih Bulan</label>
+            <input type="month" id="reportMonth" onchange="renderReport()">
+          </div>
+          <div style="display:flex; gap:10px; align-items:flex-end;">
+            <button class="btn btn-primary" onclick="generatePDF()">📄 Cetak PDF</button>
+            <button class="btn btn-secondary" onclick="printReport()">🖨️ Print</button>
+          </div>
+        </div>
+
+        <div class="report-summary" id="reportSummary"></div>
+
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Tanggal</th><th>Jenis</th><th>Nama</th><th>Nominal</th><th>Fee</th><th>Dampak Modal</th></tr></thead>
+            <tbody id="reportTable"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
     <!-- SETTINGS -->
     <div id="page-settings" style="display:none;">
       <div class="section-card">
@@ -523,6 +572,13 @@
           <button type="submit" class="btn btn-primary" style="width:auto;">💾 Simpan Pengaturan</button>
         </form>
       </div>
+      
+      <div class="section-card">
+        <div class="section-title" style="margin-bottom:14px;">💰 Tambah Modal</div>
+        <p style="color:var(--text-muted); margin-bottom:16px; font-size:13px;">Gunakan fitur ini untuk menambah saldo modal kasir ketika modal sudah habis atau perlu penambahan.</p>
+        <button class="btn btn-success" onclick="openAddModal()" style="width:auto;">➕ Tambah Modal Sekarang</button>
+      </div>
+
       <div class="section-card">
         <div class="section-title" style="margin-bottom:14px;">Informasi Kas & Modal</div>
         <div class="kpi-grid" style="margin:0;">
@@ -582,7 +638,7 @@
         <div id="serviceFields">
           <div class="form-group">
             <label>Nominal (Rp)</label>
-            <input type="number" id="txAmount" min="10000" step="10000" placeholder="0" oninput="calcTotal()">
+            <input type="number" id="txAmount" min="10000" step="10000" placeholder="100000" oninput="calcTotal()">
           </div>
           <div class="form-group">
             <label>Fee / Biaya Admin (Rp)</label>
@@ -625,6 +681,39 @@
   </div>
 </div>
 
+<!-- ADD MODAL -->
+<div class="modal-overlay" id="addModalOverlay">
+  <div class="modal">
+    <div class="modal-header">
+      <h2>➕ Tambah Modal</h2>
+      <button class="modal-close" onclick="closeAddModal()">&times;</button>
+    </div>
+    <div class="modal-body">
+      <div class="info-box" style="margin-bottom:20px;">
+        <div class="info-row"><span>Modal Saat Ini</span><span id="currentModalDisplay">Rp 0</span></div>
+        <div class="info-row total"><span>Setelah Ditambah</span><span id="newModalDisplay">Rp 0</span></div>
+      </div>
+      <form id="addModalForm" onsubmit="submitAddModal(event)">
+        <div class="form-group">
+          <label>Jumlah Tambah Modal (Rp)</label>
+          <input type="number" id="addModalAmount" min="10000" step="10000" placeholder="500000" oninput="calcAddModal()" required>
+        </div>
+        <div class="form-group">
+          <label>Keterangan (Opsional)</label>
+          <input type="text" id="addModalNote" placeholder="Contoh: Tambah modal dari pemilik">
+        </div>
+        <div class="modal-info" style="background:var(--success-light); border-color:var(--success); color:var(--success);">
+          <span>💡</span><span>Modal akan bertambah sesuai jumlah yang diinput</span>
+        </div>
+      </form>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeAddModal()">Batal</button>
+      <button class="btn btn-success" onclick="document.getElementById('addModalForm').requestSubmit()">✅ Tambah Modal</button>
+    </div>
+  </div>
+</div>
+
 <!-- RECEIPT MODAL -->
 <div class="modal-overlay" id="receiptModal">
   <div class="modal">
@@ -657,9 +746,9 @@ const SERVICES = [
 ];
 
 const PRODUCTS = [
-  { key:'gas', label:'Tabung Gas', icon:'🛢️', color:'#f97316', sellPrice:20000 },
-  { key:'air', label:'Air Isi Ulang', icon:'💧', color:'#06b6d4', sellPrice:5000 },
-  //{ key:'kartuhp', label:'Kartu HP', icon:'📲', color:'#8b5cf6', fee:2000, flow:'out' },
+  { key:'gas', label:'Tabung Gas', icon:'🛢️', color:'#f97316', sellPrice:165000 },
+  { key:'air', label:'Air Isi Ulang', icon:'💧', color:'#06b6d4', sellPrice:6000 },
+  { key:'kartuhp', label:'Kartu HP', icon:'📲', color:'#8b5cf6', sellPrice:20000 },
 ];
 
 const ALL_ITEMS = [
@@ -690,7 +779,9 @@ function getModalSisa() {
   let sisa = state.settings.modal;
   state.transactions.forEach(t => {
     const item = getItem(t.type);
-    if (item) {
+    if (t.type === 'add_modal') {
+      sisa += t.amount;
+    } else if (item) {
       if (item.itemType === 'product') {
         // Produk tidak mengurangi modal
       } else if (item.flow === 'out') {
@@ -706,10 +797,8 @@ function getTotalKeluar() {
   let total = 0;
   state.transactions.forEach(t => {
     const item = getItem(t.type);
-    if (!item) return;
-    if (item.itemType === 'product') {
-      // Produk tidak计入 modal keluar
-    } else if (item.flow === 'out') {
+    if (!item || t.type === 'add_modal') return;
+    if (item.itemType !== 'product' && item.flow === 'out') {
       total += t.amount;
     }
   });
@@ -719,7 +808,11 @@ function getTotalMasuk() {
   let total = 0;
   state.transactions.forEach(t => {
     const item = getItem(t.type);
-    if (item && item.itemType !== 'product' && item.flow === 'in') total += t.amount;
+    if (t.type === 'add_modal') {
+      total += t.amount;
+    } else if (item && item.itemType !== 'product' && item.flow === 'in') {
+      total += t.amount;
+    }
   });
   return total;
 }
@@ -727,7 +820,6 @@ function getTotalFee() {
   return state.transactions.reduce((s, t) => s + (t.fee || 0), 0);
 }
 function getTotalRevenue() {
-  // Total pendapatan dari produk (omzet)
   return state.transactions.filter(t => getItem(t.type)?.itemType === 'product').reduce((s, t) => s + (t.amount || 0), 0);
 }
 function getTodayKeluar() {
@@ -735,10 +827,8 @@ function getTodayKeluar() {
   let total = 0;
   state.transactions.filter(t => new Date(t.date).toDateString() === today).forEach(t => {
     const item = getItem(t.type);
-    if (!item) return;
-    if (item.itemType === 'product') {
-      // Produk tidak计入
-    } else if (item.flow === 'out') {
+    if (!item || t.type === 'add_modal') return;
+    if (item.itemType !== 'product' && item.flow === 'out') {
       total += t.amount;
     }
   });
@@ -749,7 +839,11 @@ function getTodayMasuk() {
   let total = 0;
   state.transactions.filter(t => new Date(t.date).toDateString() === today).forEach(t => {
     const item = getItem(t.type);
-    if (item && item.itemType !== 'product' && item.flow === 'in') total += t.amount;
+    if (t.type === 'add_modal') {
+      total += t.amount;
+    } else if (item && item.itemType !== 'product' && item.flow === 'in') {
+      total += t.amount;
+    }
   });
   return total;
 }
@@ -780,8 +874,8 @@ function doLogin(e) {
   e.preventDefault();
   const id = document.getElementById('loginId').value;
   const pass = document.getElementById('loginPass').value;
-  if (id==='kiosyuyun' && pass==='123456') {
-    state.user = { id, name: 'Kios Yuyun' };
+  if (id==='kasir01' && pass==='123456') {
+    state.user = { id, name: 'Kasir 01' };
     localStorage.setItem('bri_user', JSON.stringify(state.user));
     initApp();
   } else alert('ID atau password salah!');
@@ -802,6 +896,12 @@ function initApp() {
   document.getElementById('userAvatar').textContent = state.user.name[0].toUpperCase();
   document.getElementById('agentInfo').textContent = state.settings.name;
   document.getElementById('currentDate').textContent = new Date().toLocaleDateString('id-ID',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+  
+  // Set default month untuk report
+  const now = new Date();
+  const monthStr = now.getFullYear() + '-' + String(now.getMonth()+1).padStart(2,'0');
+  document.getElementById('reportMonth').value = monthStr;
+  
   renderMenu();
   renderProduk();
   renderDashboard();
@@ -809,6 +909,7 @@ function initApp() {
   renderProdukStats();
   renderAnalytics();
   renderHistory();
+  renderReport();
   loadSettings();
 }
 
@@ -897,16 +998,21 @@ function renderDashboard() {
   const recent = state.transactions.slice(-5).reverse();
   document.getElementById('recentTable').innerHTML = recent.length ? recent.map(t => {
     const item = getItem(t.type);
-    if (!item) return '';
-    const dampak = (item.itemType === 'product')
+    if (!item && t.type !== 'add_modal') return '';
+    const dampak = (t.type === 'add_modal')
+      ? `<span style="color:var(--success);font-weight:600;">+ ${fmt(t.amount)} (tambah modal)</span>`
+      : (item.itemType === 'product')
       ? `<span style="color:var(--success);font-weight:600;">+ ${fmt(t.amount)} (omzet)</span>`
       : (item.flow === 'out'
         ? `<span style="color:var(--danger);font-weight:600;">- ${fmt(t.amount)}</span>`
         : `<span style="color:var(--success);font-weight:600;">+ ${fmt(t.amount)}</span>`);
     const revenueStr = t.itemType === 'product' ? `<span style="color:var(--success);font-weight:600;">+${fmt(t.amount)}</span>` : (t.fee > 0 ? `<span style="color:var(--purple);font-weight:600;">+${fmt(t.fee)}</span>` : '-');
+    const label = t.type === 'add_modal' ? 'Tambah Modal' : item.label;
+    const icon = t.type === 'add_modal' ? '💰' : item.icon;
+    const color = t.type === 'add_modal' ? '#10b981' : item.color;
     return `<tr>
       <td>${fmtDate(t.date)}</td>
-      <td><span style="display:inline-flex;align-items:center;gap:8px;"><span style="width:28px;height:28px;border-radius:8px;background:${item.color}20;color:${item.color};display:inline-flex;align-items:center;justify-content:center;font-size:14px;">${item.icon}</span>${item.label}</span></td>
+      <td><span style="display:inline-flex;align-items:center;gap:8px;"><span style="width:28px;height:28px;border-radius:8px;background:${color}20;color:${color};display:inline-flex;align-items:center;justify-content:center;font-size:14px;">${icon}</span>${label}</span></td>
       <td>${t.name}</td>
       <td><b>${fmt(t.amount)}</b></td>
       <td>${revenueStr}</td>
@@ -1082,10 +1188,8 @@ function renderFlowChart() {
     let total = 0;
     state.transactions.filter(t => t.date.startsWith(d.date)).forEach(t => {
       const item = getItem(t.type);
-      if (!item) return;
-      if (item.itemType === 'product') {
-        // Produk tidak计入
-      } else if (item.flow === 'out') {
+      if (!item || t.type === 'add_modal') return;
+      if (item.itemType !== 'product' && item.flow === 'out') {
         total += t.amount;
       }
     });
@@ -1236,7 +1340,6 @@ function calcTotal() {
     amount = +document.getElementById('txAmount').value || 0;
     fee = +document.getElementById('txFee').value || 0;
     revenue = fee;
-    const item = getItem(document.getElementById('txType').value);
     document.getElementById('sumAmount').textContent = fmt(amount);
     document.getElementById('sumFee').textContent = fmt(fee);
     document.getElementById('sumTotal').textContent = fmt(amount + fee);
@@ -1268,8 +1371,8 @@ function submitTx(e) {
     fee = 0;
     revenue = amount;
   } else {
-    amount = +document.getElementById('txAmount').value;
-    fee = +document.getElementById('txFee').value;
+    amount = +document.getElementById('txAmount').value || 0;
+    fee = +document.getElementById('txFee').value || 0;
     revenue = fee;
     qty = 1;
     sellPrice = amount;
@@ -1297,8 +1400,51 @@ function submitTx(e) {
   renderProdukStats();
   renderAnalytics();
   renderHistory();
+  renderReport();
   loadSettings();
   showReceipt(tx);
+}
+
+// ===== ADD MODAL =====
+function openAddModal() {
+  const currentModal = getModalSisa();
+  document.getElementById('currentModalDisplay').textContent = fmt(currentModal);
+  document.getElementById('newModalDisplay').textContent = fmt(currentModal);
+  document.getElementById('addModalForm').reset();
+  document.getElementById('addModalOverlay').classList.add('active');
+}
+function closeAddModal() { document.getElementById('addModalOverlay').classList.remove('active'); }
+function calcAddModal() {
+  const currentModal = getModalSisa();
+  const addAmount = +document.getElementById('addModalAmount').value || 0;
+  document.getElementById('newModalDisplay').textContent = fmt(currentModal + addAmount);
+}
+function submitAddModal(e) {
+  e.preventDefault();
+  const amount = +document.getElementById('addModalAmount').value;
+  const note = document.getElementById('addModalNote').value || 'Tambah Modal';
+  
+  const tx = {
+    id: 'TX' + Date.now(),
+    type: 'add_modal',
+    itemType: 'add_modal',
+    name: note,
+    amount: amount,
+    fee: 0,
+    revenue: 0,
+    qty: 1,
+    sellPrice: amount,
+    date: new Date().toISOString(),
+    status: 'success',
+    agentId: state.settings.id,
+  };
+  state.transactions.push(tx);
+  save();
+  closeAddModal();
+  renderDashboard();
+  renderReport();
+  loadSettings();
+  alert('✅ Modal berhasil ditambahkan sebesar ' + fmt(amount));
 }
 
 // ===== RECEIPT =====
@@ -1309,11 +1455,18 @@ function showReceiptById(id) {
 
 function showReceipt(tx) {
   const item = getItem(tx.type);
-  if (!item) return;
+  if (!item && tx.type !== 'add_modal') return;
   const modalSisa = getModalSisa();
   let dampak, extraRows = '';
   
-  if (tx.itemType === 'product') {
+  if (tx.type === 'add_modal') {
+    dampak = `+ ${fmt(tx.amount)} (tambah modal)`;
+    extraRows = `
+      <div class="row"><span>Jenis</span><span>Tambah Modal</span></div>
+      <div class="row"><span>Keterangan</span><span>${tx.name}</span></div>
+      <div class="row" style="color:var(--success);font-weight:bold;"><span> Modal Bertambah</span><span>+${fmt(tx.amount)}</span></div>
+    `;
+  } else if (tx.itemType === 'product') {
     dampak = `+ ${fmt(tx.amount)} (omzet)`;
     extraRows = `
       <div class="row"><span>Produk</span><span>${item.label}</span></div>
@@ -1333,15 +1486,15 @@ function showReceipt(tx) {
       <div class="center">Telp: ${state.settings.phone}</div>
       <hr>
       <div class="center"><b>BUKTI TRANSAKSI</b></div>
-      <div class="center" style="font-size:10px;">${tx.itemType === 'product' ? 'PENJUALAN PRODUK' : 'LAYANAN DIGITAL'}</div>
+      <div class="center" style="font-size:10px;">${tx.type === 'add_modal' ? 'TAMBAH MODAL' : (tx.itemType === 'product' ? 'PENJUALAN PRODUK' : 'LAYANAN DIGITAL')}</div>
       <hr>
       <div class="row"><span>ID</span><span>${tx.id}</span></div>
       <div class="row"><span>Tgl</span><span>${fmtDate(tx.date)}</span></div>
-      <div class="row"><span>Jenis</span><span>${item.label}</span></div>
+      ${tx.type !== 'add_modal' ? `<div class="row"><span>Jenis</span><span>${item.label}</span></div>` : ''}
       <div class="row"><span>Nama</span><span>${tx.name}</span></div>
       ${extraRows}
       <hr>
-      <div class="row"><span>Total Bayar</span><span>${fmt(tx.amount)}</span></div>
+      <div class="row"><span>Total</span><span>${fmt(tx.amount)}</span></div>
       ${tx.fee > 0 ? `<div class="row"><span>Fee</span><span>${fmt(tx.fee)}</span></div>` : ''}
       <hr>
       <div class="row"><span>Dampak Modal</span><span>${dampak}</span></div>
@@ -1375,21 +1528,28 @@ function renderHistory() {
 
   document.getElementById('historyTable').innerHTML = txs.length ? txs.map(t => {
     const item = getItem(t.type);
-    if (!item) return '';
-    const tipeBadge = item.itemType === 'product' 
+    if (!item && t.type !== 'add_modal') return '';
+    const tipeBadge = t.type === 'add_modal' 
+      ? `<span class="badge badge-success">Tambah Modal</span>`
+      : (item.itemType === 'product' 
       ? `<span class="badge badge-product">Produk</span>` 
-      : `<span class="badge badge-service">Layanan</span>`;
-    const dampak = (item.itemType === 'product')
+      : `<span class="badge badge-service">Layanan</span>`);
+    const dampak = (t.type === 'add_modal')
+      ? `<span style="color:var(--success);font-weight:600;">+ ${fmt(t.amount)} (tambah modal)</span>`
+      : (item.itemType === 'product')
       ? `<span style="color:var(--success);font-weight:600;">+ ${fmt(t.amount)} (omzet)</span>`
       : (item.flow === 'out'
         ? `<span style="color:var(--danger);font-weight:600;">- ${fmt(t.amount)}</span>`
         : `<span style="color:var(--success);font-weight:600;">+ ${fmt(t.amount)}</span>`);
-    const revenueStr = t.itemType === 'product' ? `<span style="color:var(--success);font-weight:600;">+${fmt(t.revenue||t.amount)}</span>` : (t.fee > 0 ? `<span style="color:var(--purple);font-weight:600;">+${fmt(t.fee)}</span>` : '-');
+    const revenueStr = t.type === 'add_modal' ? '-' : (t.itemType === 'product' ? `<span style="color:var(--success);font-weight:600;">+${fmt(t.revenue||t.amount)}</span>` : (t.fee > 0 ? `<span style="color:var(--purple);font-weight:600;">+${fmt(t.fee)}</span>` : '-'));
+    const label = t.type === 'add_modal' ? 'Tambah Modal' : item.label;
+    const icon = t.type === 'add_modal' ? '💰' : item.icon;
+    const color = t.type === 'add_modal' ? '#10b981' : item.color;
     return `<tr>
       <td style="font-family:monospace;font-size:11px;">${t.id}</td>
       <td>${fmtDate(t.date)}</td>
       <td>${tipeBadge}</td>
-      <td><span style="display:inline-flex;align-items:center;gap:6px;"><span style="width:24px;height:24px;border-radius:6px;background:${item.color}20;color:${item.color};display:inline-flex;align-items:center;justify-content:center;font-size:12px;">${item.icon}</span>${item.label}</span></td>
+      <td><span style="display:inline-flex;align-items:center;gap:6px;"><span style="width:24px;height:24px;border-radius:6px;background:${color}20;color:${color};display:inline-flex;align-items:center;justify-content:center;font-size:12px;">${icon}</span>${label}</span></td>
       <td>${t.name}</td>
       <td>${t.itemType==='product' ? t.qty+'x' : '-'}</td>
       <td><b>${fmt(t.amount)}</b></td>
@@ -1405,6 +1565,259 @@ function resetFilter() {
   document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
   document.querySelector('.tab-btn[data-filter="all"]').classList.add('active');
   renderHistory(); 
+}
+
+// ===== REPORT BULANAN =====
+function renderReport() {
+  const monthVal = document.getElementById('reportMonth').value;
+  if (!monthVal) return;
+  
+  const [year, month] = monthVal.split('-');
+  const monthTx = state.transactions.filter(t => {
+    const d = new Date(t.date);
+    return d.getFullYear() == year && (d.getMonth()+1) == month;
+  });
+  
+  const totalOmzet = monthTx.reduce((s,t) => s + (t.amount||0), 0);
+  const totalFee = monthTx.reduce((s,t) => s + (t.fee||0), 0);
+  const totalRevenue = monthTx.filter(t => getItem(t.type)?.itemType === 'product').reduce((s,t) => s + (t.amount||0), 0);
+  const totalTrx = monthTx.length;
+  
+  // HITUNG MODAL KELUAR KHUSUS BULAN INI
+  let monthlyModalKeluar = 0;
+  monthTx.forEach(t => {
+    const item = getItem(t.type);
+    if (item && item.itemType !== 'product' && item.flow === 'out') {
+      monthlyModalKeluar += t.amount;
+    }
+  });
+
+  document.getElementById('reportSummary').innerHTML = `
+    <div class="report-card">
+      <div class="label">Total Transaksi</div>
+      <div class="value">${totalTrx}</div>
+    </div>
+    <div class="report-card green">
+      <div class="label">Total Omzet</div>
+      <div class="value">${fmt(totalOmzet)}</div>
+    </div>
+    <div class="report-card red">
+      <div class="label">Modal Keluar</div>
+      <div class="value">${fmt(monthlyModalKeluar)}</div>
+    </div>
+    <div class="report-card orange">
+      <div class="label">Total Fee</div>
+      <div class="value">${fmt(totalFee)}</div>
+    </div>
+    <div class="report-card purple">
+      <div class="label">Pendapatan Produk</div>
+      <div class="value">${fmt(totalRevenue)}</div>
+    </div>
+  `;
+  
+  document.getElementById('reportTable').innerHTML = monthTx.length ? monthTx.map(t => {
+    const item = getItem(t.type);
+    if (!item && t.type !== 'add_modal') return '';
+    const label = t.type === 'add_modal' ? 'Tambah Modal' : item.label;
+    const icon = t.type === 'add_modal' ? '💰' : item.icon;
+    const color = t.type === 'add_modal' ? '#10b981' : item.color;
+    const dampak = (t.type === 'add_modal')
+      ? `<span style="color:var(--success);font-weight:600;">+ ${fmt(t.amount)}</span>`
+      : (item.itemType === 'product')
+      ? `<span style="color:var(--success);font-weight:600;">+ ${fmt(t.amount)}</span>`
+      : (item.flow === 'out'
+        ? `<span style="color:var(--danger);font-weight:600;">- ${fmt(t.amount)}</span>`
+        : `<span style="color:var(--success);font-weight:600;">+ ${fmt(t.amount)}</span>`);
+    return `<tr>
+      <td>${fmtDate(t.date)}</td>
+      <td><span style="display:inline-flex;align-items:center;gap:6px;"><span style="width:24px;height:24px;border-radius:6px;background:${color}20;color:${color};display:inline-flex;align-items:center;justify-content:center;font-size:12px;">${icon}</span>${label}</span></td>
+      <td>${t.name}</td>
+      <td><b>${fmt(t.amount)}</b></td>
+      <td>${t.fee > 0 ? fmt(t.fee) : '-'}</td>
+      <td>${dampak}</td>
+    </tr>`;
+  }).join('') : '<tr><td colspan="6" class="empty-state"><div class="icon">📭</div>Tidak ada data untuk bulan ini</td></tr>';
+}
+
+function generatePDF() {
+  const monthVal = document.getElementById('reportMonth').value;
+  if (!monthVal) {
+    alert('Pilih bulan terlebih dahulu!');
+    return;
+  }
+  
+  const [year, month] = monthVal.split('-');
+  const monthNames = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
+  const monthName = monthNames[parseInt(month)-1];
+  
+  const monthTx = state.transactions.filter(t => {
+    const d = new Date(t.date);
+    return d.getFullYear() == year && (d.getMonth()+1) == month;
+  });
+  
+  const totalOmzet = monthTx.reduce((s,t) => s + (t.amount||0), 0);
+  const totalFee = monthTx.reduce((s,t) => s + (t.fee||0), 0);
+  const totalRevenue = monthTx.filter(t => getItem(t.type)?.itemType === 'product').reduce((s,t) => s + (t.amount||0), 0);
+  
+  // Hitung Modal Keluar Bulanan
+  let monthlyModalKeluar = 0;
+  monthTx.forEach(t => {
+    const item = getItem(t.type);
+    if (item && item.itemType !== 'product' && item.flow === 'out') {
+      monthlyModalKeluar += t.amount;
+    }
+  });
+
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF();
+  
+  // Header
+  doc.setFontSize(18);
+  doc.setTextColor(0, 83, 158);
+  doc.text('BRI LINK KASIR', 105, 20, { align: 'center' });
+  doc.setFontSize(12);
+  doc.setTextColor(100, 116, 139);
+  doc.text(state.settings.name, 105, 28, { align: 'center' });
+  doc.text(state.settings.addr, 105, 35, { align: 'center' });
+  
+  // Title
+  doc.setFontSize(14);
+  doc.setTextColor(0, 0, 0);
+  doc.text(`Laporan Bulanan - ${monthName} ${year}`, 105, 50, { align: 'center' });
+  
+  // Summary
+  doc.setFontSize(11);
+  doc.text(`Total Transaksi: ${monthTx.length}`, 14, 65);
+  doc.text(`Total Omzet: ${fmt(totalOmzet)}`, 14, 72);
+  doc.text(`Total Modal Keluar: ${fmt(monthlyModalKeluar)}`, 14, 79);
+  doc.text(`Total Fee: ${fmt(totalFee)}`, 14, 86);
+  doc.text(`Pendapatan Produk: ${fmt(totalRevenue)}`, 14, 93);
+  
+  // Table
+  const tableData = monthTx.map(t => {
+    const item = getItem(t.type);
+    const label = t.type === 'add_modal' ? 'Tambah Modal' : (item ? item.label : t.type);
+    return [
+      fmtDate(t.date),
+      label,
+      t.name,
+      fmt(t.amount),
+      t.fee > 0 ? fmt(t.fee) : '-',
+      t.type === 'add_modal' ? '+Tambah' : (item && item.flow === 'out' ? '-Keluar' : '+Masuk')
+    ];
+  });
+  
+  doc.autoTable({
+    startY: 102,
+    head: [['Tanggal', 'Jenis', 'Nama', 'Nominal', 'Fee', 'Dampak']],
+    body: tableData,
+    styles: { fontSize: 9, cellPadding: 2 },
+    headStyles: { fillColor: [0, 83, 158], textColor: 255 },
+    alternateRowStyles: { fillColor: [245, 247, 251] }
+  });
+  
+  // Footer
+  const finalY = doc.lastAutoTable.finalY + 10;
+  doc.setFontSize(10);
+  doc.text(`Dicetak pada: ${new Date().toLocaleString('id-ID')}`, 14, finalY);
+  doc.text(`Kasir: ${state.user.name}`, 14, finalY + 7);
+  
+  doc.save(`Laporan_${monthName}_${year}.pdf`);
+}
+
+function printReport() {
+  const monthVal = document.getElementById('reportMonth').value;
+  if (!monthVal) {
+    alert('Pilih bulan terlebih dahulu!');
+    return;
+  }
+  
+  const [year, month] = monthVal.split('-');
+  const monthNames = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
+  const monthName = monthNames[parseInt(month)-1];
+  
+  const monthTx = state.transactions.filter(t => {
+    const d = new Date(t.date);
+    return d.getFullYear() == year && (d.getMonth()+1) == month;
+  });
+  
+  const totalOmzet = monthTx.reduce((s,t) => s + (t.amount||0), 0);
+  const totalFee = monthTx.reduce((s,t) => s + (t.fee||0), 0);
+  const totalRevenue = monthTx.filter(t => getItem(t.type)?.itemType === 'product').reduce((s,t) => s + (t.amount||0), 0);
+  
+  // Hitung Modal Keluar Bulanan
+  let monthlyModalKeluar = 0;
+  monthTx.forEach(t => {
+    const item = getItem(t.type);
+    if (item && item.itemType !== 'product' && item.flow === 'out') {
+      monthlyModalKeluar += t.amount;
+    }
+  });
+
+  const html = `
+    <div style="font-family: Arial, sans-serif; padding: 20px; max-width: 800px; margin: 0 auto;">
+      <h1 style="text-align: center; color: #00539E; margin-bottom: 5px;">BRI LINK KASIR</h1>
+      <p style="text-align: center; color: #64748b; margin: 0;">${state.settings.name}</p>
+      <p style="text-align: center; color: #64748b; margin: 0 0 20px 0;">${state.settings.addr}</p>
+      <h2 style="text-align: center; margin-bottom: 20px;">Laporan Bulanan - ${monthName} ${year}</h2>
+      
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin-bottom: 30px;">
+        <div style="background: #e6f0fa; padding: 15px; border-radius: 8px;">
+          <div style="font-size: 12px; color: #64748b;">Total Transaksi</div>
+          <div style="font-size: 20px; font-weight: bold; color: #00539E;">${monthTx.length}</div>
+        </div>
+        <div style="background: #d1fae5; padding: 15px; border-radius: 8px;">
+          <div style="font-size: 12px; color: #64748b;">Total Omzet</div>
+          <div style="font-size: 20px; font-weight: bold; color: #10b981;">${fmt(totalOmzet)}</div>
+        </div>
+        <div style="background: #fee2e2; padding: 15px; border-radius: 8px;">
+          <div style="font-size: 12px; color: #64748b;">Modal Keluar</div>
+          <div style="font-size: 20px; font-weight: bold; color: #ef4444;">${fmt(monthlyModalKeluar)}</div>
+        </div>
+        <div style="background: #fef3e2; padding: 15px; border-radius: 8px;">
+          <div style="font-size: 12px; color: #64748b;">Total Fee</div>
+          <div style="font-size: 20px; font-weight: bold; color: #F58220;">${fmt(totalFee)}</div>
+        </div>
+        <div style="background: #ede9fe; padding: 15px; border-radius: 8px;">
+          <div style="font-size: 12px; color: #64748b;">Pendapatan Produk</div>
+          <div style="font-size: 20px; font-weight: bold; color: #8b5cf6;">${fmt(totalRevenue)}</div>
+        </div>
+      </div>
+      
+      <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px;">
+        <thead>
+          <tr style="background: #00539E; color: white;">
+            <th style="padding: 10px; text-align: left;">Tanggal</th>
+            <th style="padding: 10px; text-align: left;">Jenis</th>
+            <th style="padding: 10px; text-align: left;">Nama</th>
+            <th style="padding: 10px; text-align: right;">Nominal</th>
+            <th style="padding: 10px; text-align: right;">Fee</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${monthTx.map(t => {
+            const item = getItem(t.type);
+            const label = t.type === 'add_modal' ? 'Tambah Modal' : (item ? item.label : t.type);
+            return `<tr style="border-bottom: 1px solid #e2e8f0;">
+              <td style="padding: 8px;">${fmtDate(t.date)}</td>
+              <td style="padding: 8px;">${label}</td>
+              <td style="padding: 8px;">${t.name}</td>
+              <td style="padding: 8px; text-align: right;">${fmt(t.amount)}</td>
+              <td style="padding: 8px; text-align: right;">${t.fee > 0 ? fmt(t.fee) : '-'}</td>
+            </tr>`;
+          }).join('')}
+        </tbody>
+      </table>
+      
+      <p style="font-size: 11px; color: #64748b; margin-top: 30px;">
+        Dicetak pada: ${new Date().toLocaleString('id-ID')}<br>
+        Kasir: ${state.user.name}
+      </p>
+    </div>
+  `;
+  
+  document.getElementById('printArea').innerHTML = html;
+  window.print();
 }
 
 // ===== SETTINGS =====
@@ -1451,18 +1864,19 @@ function saveSettings(e) {
 
 // ===== NAV =====
 function showPage(page, el) {
-  ['dashboard','layanan','produk','analytics','history','settings'].forEach(p => {
+  ['dashboard','layanan','produk','analytics','history','report','settings'].forEach(p => {
     document.getElementById('page-'+p).style.display = p===page?'block':'none';
   });
   document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
   el.classList.add('active');
-  const titles = {dashboard:'Dashboard',layanan:'Layanan Digital',produk:'Produk Fisik',analytics:'Analitik Performa',history:'Riwayat Transaksi',settings:'Pengaturan Agen'};
+  const titles = {dashboard:'Dashboard',layanan:'Layanan Digital',produk:'Produk Fisik',analytics:'Analitik Performa',history:'Riwayat Transaksi',report:'Laporan Bulanan',settings:'Pengaturan Agen'};
   document.getElementById('pageTitle').textContent = titles[page];
   if (page==='dashboard') renderDashboard();
   if (page==='layanan') renderLayanan();
   if (page==='produk') renderProdukStats();
   if (page==='analytics') renderAnalytics();
   if (page==='history') renderHistory();
+  if (page==='report') renderReport();
   if (page==='settings') loadSettings();
   
   // Auto-close sidebar on mobile after navigation

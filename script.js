@@ -1008,8 +1008,8 @@ function saveSettings(e) {
     id: document.getElementById('setId').value,
     addr: document.getElementById('setAddr').value,
     phone: document.getElementById('setPhone').value,
-    modalBrimo: +document.getElementById('setModalBrmo').value,
-    modalCash: +document.getElementById('setModalCash').value,
+    modalBrimo: parseInt(document.getElementById('setModalBrmo').value.replace(/\./g, '')) || 0,
+    modalCash: parseInt(document.getElementById('setModalCash').value.replace(/\./g, '')) || 0,
   };
   save();
   document.getElementById('agentInfo').textContent = state.settings.name;

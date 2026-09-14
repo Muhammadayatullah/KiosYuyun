@@ -283,8 +283,8 @@
             <div class="form-group"><label>ID Agen</label><input type="text" id="setId" required /></div>
             <div class="form-group"><label>No. Telepon</label><input type="text" id="setPhone" /></div>
             <div class="form-group"><label>Alamat Lengkap</label><input type="text" id="setAddr" /></div>
-            <div class="form-group"><label>Modal Awal BRImo (Rp)</label><input type="number" id="setModalBrmo" onkeyup="formatRupiahInput(this)" /></div>
-            <div class="form-group"><label>Modal Awal Cash (Rp)</label><input type="number" id="setModalCash" onkeyup="formatRupiahInput(this)" /></div>
+            <div class="form-group"><label>Modal Awal BRImo (Rp)</label><input type="text" id="setModalBrmo" inputmode="numeric" onkeyup="formatRupiahInput(this)" onkeypress="return hanyaAngka(event)" /></div>
+            <div class="form-group"><label>Modal Awal Cash (Rp)</label><input type="text" id="setModalCash" inputmode="numeric" onkeyup="formatRupiahInput(this)" onkeypress="return hanyaAngka(event)" /></div>
           </div>
           <button type="submit" class="btn btn-primary">💾 Simpan Pengaturan</button>
         </form>

@@ -4,664 +4,715 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>BRI Link Kasir Pro</title>
-<link rel="stylesheet" href="style.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<link rel="stylesheet" href="style.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.0/jspdf.plugin.autotable.min.js"></script>
 </head>
 <body>
 
-<!-- LOGIN SCREEN -->
+<!-- ===== LOGIN SCREEN ===== -->
 <div id="loginScreen" class="login-wrap">
-<div class="login-card">
-<div class="login-brand">
-<div class="logo">🏦</div>
-<h1>BRI Link Kasir</h1>
-<p>Sistem Agen Perbankan Profesional</p>
-</div>
-<form onsubmit="doLogin(event)">
-<div class="form-group">
-<label>ID Kasir</label>
-<input type="text" id="loginId" placeholder="Masukkan ID Kasir" required>
-</div>
-<div class="form-group">
-<label>Password</label>
-<input type="password" id="loginPass" placeholder="Masukkan Password" required>
-</div>
-<button type="submit" class="btn btn-primary" style="width:100%;">Masuk ke Sistem</button>
-</form>
-<div class="login-hint">🔒 Hanya kasir terdaftar yang dapat masuk</div>
-</div>
+  <div class="login-card">
+    <div class="login-brand">
+      <div class="logo">🏦</div>
+      <h1>BRI Link Kasir</h1>
+      <p>Sistem Agen Perbankan Profesional</p>
+    </div>
+    <form onsubmit="doLogin(event)">
+      <div class="form-group">
+        <label>ID Kasir</label>
+        <input type="text" id="loginId" placeholder="Masukkan ID Kasir" required>
+      </div>
+      <div class="form-group">
+        <label>Password</label>
+        <input type="password" id="loginPass" placeholder="Masukkan Password" required>
+      </div>
+      <button type="submit" class="btn btn-primary" style="width:100%;">
+        🔒 Masuk ke Sistem
+      </button>
+    </form>
+    <div class="login-hint">
+      🏦 Kios Yuyun — Agen BRI Link
+    </div>
+  </div>
 </div>
 
-<!-- APP -->
+<!-- ===== APP ===== -->
 <div id="app" class="app">
-<!-- SIDEBAR -->
-<div class="sidebar">
-<div class="sidebar-brand">
-<div class="logo">🏦</div>
-<div>
-<h2 id="agentInfo">Kios Yuyun</h2>
-<p>Agen BRI Link</p>
-</div>
-</div>
-<div class="nav-section">
-<div class="nav-section-title">Menu Utama</div>
-<div class="nav-item active" onclick="showPage('dashboard', this)"><span class="icon">📊</span> Dashboard</div>
-<div class="nav-item" onclick="showPage('layanan', this)"><span class="icon">⚡</span> Layanan</div>
-<div class="nav-item" onclick="showPage('produk', this)"><span class="icon">📦</span> Produk</div>
-<div class="nav-item" onclick="showPage('analytics', this)"><span class="icon">📈</span> Analitik</div>
-<div class="nav-item" onclick="showPage('history', this)"><span class="icon">📜</span> Riwayat</div>
-<div class="nav-item" onclick="showPage('report', this)"><span class="icon">📋</span> Laporan Bulanan</div>
-</div>
-<div class="nav-section">
-<div class="nav-section-title">Lainnya</div>
-<div class="nav-item" onclick="showPage('settings', this)"><span class="icon">⚙️</span> Pengaturan</div>
-<div class="nav-item" onclick="doLogout()"><span class="icon">🚪</span> Keluar</div>
-</div>
-</div>
-<div id="sidebarOverlay" class="sidebar-overlay" onclick="toggleSidebar()"></div>
 
-<!-- MAIN -->
-<div class="main">
-<div class="topbar">
-<div class="topbar-left">
-<div class="hamburger" onclick="toggleSidebar()">☰</div>
-<div>
-<h1 id="pageTitle">Dashboard</h1>
-<p id="currentDate"></p>
-</div>
-</div>
-<div class="user-info">
-<div class="user-avatar" id="userAvatar">K</div>
-<div>
-<div class="name" id="userName">Kasir 01</div>
-<div class="role">Kasir Aktif</div>
-</div>
-</div>
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <div class="logo">🏦</div>
+      <div>
+        <h2>BRI Link Kasir</h2>
+        <p>Agen BRI Link</p>
+      </div>
+    </div>
+
+    <div class="nav-section">
+      <div class="nav-section-title">Menu Utama</div>
+      <div class="nav-item active" onclick="showPage('dashboard', this)">
+        <span class="icon">📊</span> Dashboard
+      </div>
+      <div class="nav-item" onclick="showPage('layanan', this)">
+        <span class="icon">⚡</span> Layanan
+      </div>
+      <div class="nav-item" onclick="showPage('produk', this)">
+        <span class="icon">📦</span> Produk
+      </div>
+      <div class="nav-item" onclick="showPage('analytics', this)">
+        <span class="icon">📈</span> Analitik
+      </div>
+      <div class="nav-item" onclick="showPage('history', this)">
+        <span class="icon">📜</span> Riwayat
+      </div>
+      <div class="nav-item" onclick="showPage('report', this)">
+        <span class="icon">📋</span> Laporan Bulanan
+      </div>
+    </div>
+
+    <div class="nav-section">
+      <div class="nav-section-title">Lainnya</div>
+      <div class="nav-item" onclick="showPage('settings', this)">
+        <span class="icon">⚙️</span> Pengaturan
+      </div>
+      <div class="nav-item" onclick="doLogout()">
+        <span class="icon">🚪</span> Keluar
+      </div>
+    </div>
+  </aside>
+
+  <div id="sidebarOverlay" class="sidebar-overlay" onclick="toggleSidebar()"></div>
+
+  <!-- MAIN -->
+  <main class="main">
+    <div class="topbar">
+      <div class="topbar-left">
+        <div class="hamburger" onclick="toggleSidebar()">☰</div>
+        <div>
+          <h1 id="pageTitle">Dashboard</h1>
+          <p id="currentDate">-</p>
+        </div>
+      </div>
+      <div class="user-info">
+        <div id="userAvatar" class="user-avatar">K</div>
+        <div>
+          <div class="name" id="userName">Kasir</div>
+          <div class="role" id="agentInfo">Agen BRI Link</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== PAGE: DASHBOARD ===== -->
+    <div id="page-dashboard">
+
+      <!-- HERO BALANCE -->
+      <div class="charts-grid" style="grid-template-columns: 1fr 1fr; margin-bottom: 24px;">
+        <div class="modal-balance-card" style="background: linear-gradient(135deg, #00539E, #003d75);">
+          <div class="title">💳 Saldo BRImo (Digital)</div>
+          <div class="big-value" id="heroBrmo">Rp 0</div>
+          <div class="modal-balance-row">
+            <div class="modal-balance-item">
+              <div class="lbl">Modal Awal</div>
+              <div class="val" id="heroBrmoAwal">Rp 0</div>
+            </div>
+            <div class="modal-balance-item">
+              <div class="lbl">Keluar</div>
+              <div class="val out" id="heroBrmoKeluar">Rp 0</div>
+            </div>
+            <div class="modal-balance-item">
+              <div class="lbl">Masuk</div>
+              <div class="val in" id="heroBrmoMasuk">Rp 0</div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-balance-card" style="background: linear-gradient(135deg, #10b981, #059669);">
+          <div class="title">💵 Saldo Cash (Fisik)</div>
+          <div class="big-value" id="heroCash">Rp 0</div>
+          <div class="modal-balance-row">
+            <div class="modal-balance-item">
+              <div class="lbl">Modal Awal</div>
+              <div class="val" id="heroCashAwal">Rp 0</div>
+            </div>
+            <div class="modal-balance-item">
+              <div class="lbl">Keluar</div>
+              <div class="val out" id="heroCashKeluar">Rp 0</div>
+            </div>
+            <div class="modal-balance-item">
+              <div class="lbl">Masuk</div>
+              <div class="val in" id="heroCashMasuk">Rp 0</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- KPI -->
+      <div class="kpi-grid">
+        <div class="kpi-card" style="--kpi-color:#3b82f6; --kpi-bg:#dbeafe;">
+          <div class="kpi-header">
+            <div class="kpi-label">Transaksi Hari Ini</div>
+            <div class="kpi-icon">🔢</div>
+          </div>
+          <div class="kpi-value" id="kpiCount">0</div>
+          <div class="kpi-trend neutral" id="kpiCountTrend">- vs kemarin</div>
+        </div>
+        <div class="kpi-card" style="--kpi-color:#10b981; --kpi-bg:#d1fae5;">
+          <div class="kpi-header">
+            <div class="kpi-label">Omzet Hari Ini</div>
+            <div class="kpi-icon">💵</div>
+          </div>
+          <div class="kpi-value" id="kpiOmzet">Rp 0</div>
+          <div class="kpi-trend neutral" id="kpiOmzetTrend">- vs kemarin</div>
+        </div>
+        <div class="kpi-card" style="--kpi-color:#8b5cf6; --kpi-bg:#ede9fe;">
+          <div class="kpi-header">
+            <div class="kpi-label">Pendapatan Produk</div>
+            <div class="kpi-icon">💰</div>
+          </div>
+          <div class="kpi-value" id="kpiProfit">Rp 0</div>
+          <div class="kpi-trend neutral">Dari penjualan produk</div>
+        </div>
+        <div class="kpi-card" style="--kpi-color:#F58220; --kpi-bg:#fef3e2;">
+          <div class="kpi-header">
+            <div class="kpi-label">Total Fee Hari Ini</div>
+            <div class="kpi-icon">🎫</div>
+          </div>
+          <div class="kpi-value" id="kpiFee">Rp 0</div>
+          <div class="kpi-trend neutral">Pendapatan agen</div>
+        </div>
+      </div>
+
+      <!-- CHARTS -->
+      <div class="charts-grid">
+        <div class="chart-card">
+          <div class="chart-header">
+            <div>
+              <div class="chart-title">Tren Transaksi 7 Hari</div>
+              <div class="chart-subtitle">Pergerakan omzet dan jumlah transaksi</div>
+            </div>
+          </div>
+          <div class="chart-container">
+            <canvas id="trendChart"></canvas>
+          </div>
+        </div>
+        <div class="chart-card">
+          <div class="chart-header">
+            <div>
+              <div class="chart-title">Distribusi Layanan</div>
+              <div class="chart-subtitle">Komposisi jenis transaksi</div>
+            </div>
+          </div>
+          <div class="chart-container">
+            <canvas id="pieChart"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- RECENT TX -->
+      <div class="section-card">
+        <div class="section-header">
+          <div>
+            <div class="section-title">Transaksi Terakhir</div>
+            <div class="section-subtitle">5 transaksi terbaru</div>
+          </div>
+          <button class="btn btn-sm btn-secondary" onclick="showPage('history', document.querySelectorAll('.nav-item')[4])">Lihat Semua →</button>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Waktu</th>
+                <th>Jenis</th>
+                <th>Nama</th>
+                <th>Nominal</th>
+                <th>Pendapatan</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody id="recentTable"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== PAGE: LAYANAN ===== -->
+    <div id="page-layanan" style="display:none;">
+      <div class="section-card">
+        <div class="section-header">
+          <div>
+            <div class="section-title">🚀 Layanan Digital</div>
+            <div class="section-subtitle">Transaksi perbankan & PPOB</div>
+          </div>
+        </div>
+        <div id="menuGrid" class="menu-grid"></div>
+      </div>
+
+      <div class="section-card">
+        <div class="section-header">
+          <div>
+            <div class="section-title">Statistik Layanan</div>
+          </div>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Layanan</th>
+                <th>Jumlah Trx</th>
+                <th>Total Omzet</th>
+                <th>Total Fee</th>
+              </tr>
+            </thead>
+            <tbody id="layananTable"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== PAGE: PRODUK ===== -->
+    <div id="page-produk" style="display:none;">
+      <div class="section-card">
+        <div class="section-header">
+          <div>
+            <div class="section-title">📦 Produk Fisik</div>
+            <div class="section-subtitle">Jual produk, pendapatan masuk cash</div>
+          </div>
+          <div style="display:flex; gap:8px;">
+            <button class="btn btn-sm btn-primary" onclick="openStockModal()">📊 Atur Stok</button>
+          </div>
+        </div>
+        <div id="produkGrid" class="menu-grid"></div>
+      </div>
+
+      <div id="lowStockAlert" class="section-card" style="display:none; border-left: 4px solid var(--warning);">
+        <div class="section-header">
+          <div>
+            <div class="section-title" style="color:#92400e;">⚠️ Peringatan Stok Rendah!</div>
+            <div class="section-subtitle" style="color:#92400e;">Segera lakukan penambahan stok</div>
+          </div>
+        </div>
+        <div id="lowStockList"></div>
+      </div>
+
+      <div class="section-card">
+        <div class="section-header">
+          <div>
+            <div class="section-title">Statistik Produk</div>
+          </div>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Produk</th>
+                <th>Stok</th>
+                <th>Terjual</th>
+                <th>Total Omzet</th>
+                <th>Pendapatan</th>
+              </tr>
+            </thead>
+            <tbody id="produkTable"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== PAGE: ANALYTICS ===== -->
+    <div id="page-analytics" style="display:none;">
+      <div class="charts-grid" style="margin-bottom: 24px;">
+        <div class="chart-card">
+          <div class="chart-header">
+            <div>
+              <div class="chart-title">Performa per Jenis</div>
+              <div class="chart-subtitle">Perbandingan omzet dan fee/pendapatan</div>
+            </div>
+          </div>
+          <div class="chart-container">
+            <canvas id="barChart"></canvas>
+          </div>
+        </div>
+        <div class="chart-card">
+          <div class="chart-header">
+            <div>
+              <div class="chart-title">Top 5 Terlaris</div>
+              <div class="chart-subtitle">Berdasarkan jumlah transaksi</div>
+            </div>
+          </div>
+          <div id="topList" style="padding: 10px 0;"></div>
+        </div>
+      </div>
+
+      <div class="section-card">
+        <div class="section-header">
+          <div>
+            <div class="section-title">Ringkasan Performa</div>
+          </div>
+        </div>
+        <div class="kpi-grid">
+          <div class="kpi-card" style="--kpi-color:#3b82f6; --kpi-bg:#dbeafe;">
+            <div class="kpi-label">Rata-rata per Hari</div>
+            <div class="kpi-value" id="avgDay">0 trx</div>
+          </div>
+          <div class="kpi-card" style="--kpi-color:#10b981; --kpi-bg:#d1fae5;">
+            <div class="kpi-label">Rata-rata Nominal</div>
+            <div class="kpi-value" id="avgNom">Rp 0</div>
+          </div>
+          <div class="kpi-card" style="--kpi-color:#F58220; --kpi-bg:#fef3e2;">
+            <div class="kpi-label">Total Fee + Pendapatan</div>
+            <div class="kpi-value" id="totalFeeAll">Rp 0</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== PAGE: HISTORY ===== -->
+    <div id="page-history" style="display:none;">
+      <div class="section-card">
+        <div class="section-header">
+          <div>
+            <div class="section-title">Riwayat Transaksi</div>
+            <div class="section-subtitle">Semua Layanan • Produk</div>
+          </div>
+          <div class="tab-filter">
+            <input type="date" id="filterDate" onchange="renderHistory()" style="padding:8px 12px; border:1.5px solid var(--border); border-radius:10px; font-family:inherit;">
+            <button class="tab-btn active" data-filter="all" onclick="setFilter('all', this)">Semua</button>
+            <button class="tab-btn" data-filter="service" onclick="setFilter('service', this)">Layanan</button>
+            <button class="tab-btn" data-filter="product" onclick="setFilter('product', this)">Produk</button>
+            <button class="btn btn-sm btn-secondary" onclick="resetFilter()">Reset</button>
+          </div>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Waktu</th>
+                <th>Tipe</th>
+                <th>Jenis</th>
+                <th>Nama</th>
+                <th>Qty</th>
+                <th>Nominal</th>
+                <th>Pendapatan</th>
+                <th>Dampak Saldo</th>
+                <th>Aksi</th>
+              </tr>
+            </thead>
+            <tbody id="historyTable"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== PAGE: REPORT ===== -->
+    <div id="page-report" style="display:none;">
+      <div class="section-card">
+        <div class="section-header">
+          <div>
+            <div class="section-title">📋 Laporan Bulanan</div>
+            <div class="section-subtitle">Rekap transaksi, omzet, dan modal per bulan</div>
+          </div>
+          <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+            <input type="month" id="reportMonth" onchange="renderReport()" style="padding:8px 12px; border:1.5px solid var(--border); border-radius:10px; font-family:inherit;">
+            <button class="btn btn-sm btn-primary" onclick="generatePDF()">📄 Cetak PDF</button>
+            <button class="btn btn-sm btn-secondary" onclick="printReport()">🖨️ Print</button>
+          </div>
+        </div>
+        <div id="reportSummary" class="report-summary"></div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Tanggal</th>
+                <th>Jenis</th>
+                <th>Nama</th>
+                <th>Nominal</th>
+                <th>Fee</th>
+                <th>Dampak Saldo</th>
+              </tr>
+            </thead>
+            <tbody id="reportTable"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== PAGE: SETTINGS ===== -->
+    <div id="page-settings" style="display:none;">
+      <div class="section-card">
+        <div class="section-header">
+          <div>
+            <div class="section-title">Profil & Pengaturan Agen</div>
+          </div>
+        </div>
+        <form onsubmit="saveSettings(event)">
+          <div class="kpi-grid" style="grid-template-columns: 1fr 1fr;">
+            <div class="form-group">
+              <label>Nama Agen</label>
+              <input type="text" id="setName" required>
+            </div>
+            <div class="form-group">
+              <label>ID Agen</label>
+              <input type="text" id="setId" required>
+            </div>
+            <div class="form-group">
+              <label>No. Telepon</label>
+              <input type="text" id="setPhone">
+            </div>
+            <div class="form-group" style="grid-column: span 2;">
+              <label>Alamat Lengkap</label>
+              <input type="text" id="setAddr">
+            </div>
+            <div class="form-group">
+              <label>Modal Awal BRImo (Rp)</label>
+              <input type="text" id="setModalBrmo" onkeyup="formatRupiahInput(this)" onkeydown="return hanyaAngka(event)">
+            </div>
+            <div class="form-group">
+              <label>Modal Awal Cash (Rp)</label>
+              <input type="text" id="setModalCash" onkeyup="formatRupiahInput(this)" onkeydown="return hanyaAngka(event)">
+            </div>
+          </div>
+          <button type="submit" class="btn btn-primary">💾 Simpan Pengaturan</button>
+        </form>
+      </div>
+
+      <div class="section-card">
+        <div class="section-header">
+          <div>
+            <div class="section-title">💰 Tambah Modal</div>
+            <div class="section-subtitle">Tambahkan saldo ketika modal perlu diisi ulang</div>
+          </div>
+          <button class="btn btn-sm btn-success" onclick="openAddModal()">➕ Tambah Modal Sekarang</button>
+        </div>
+      </div>
+
+      <div class="section-card">
+        <div class="section-header">
+          <div>
+            <div class="section-title">Informasi Kas & Modal</div>
+          </div>
+        </div>
+        <div class="info-box">
+          <div class="info-row"><span>Sisa BRImo</span><b id="infoBrmo">Rp 0</b></div>
+          <div class="info-row"><span>Sisa Cash</span><b id="infoCash">Rp 0</b></div>
+          <div class="info-row"><span>Total Fee Layanan</span><b id="infoFee">Rp 0</b></div>
+          <div class="info-row"><span>Total Pendapatan Produk</span><b id="infoProfit">Rp 0</b></div>
+          <div class="info-row"><span>Total Transaksi</span><b id="infoTotalTx">0 transaksi</b></div>
+          <div class="info-row total"><span>Backup Terakhir</span><span id="infoLastBackup">Belum pernah</span></div>
+        </div>
+      </div>
+
+      <div class="section-card">
+        <div class="section-header">
+          <div>
+            <div class="section-title">Backup & Restore Data</div>
+          </div>
+        </div>
+        <div style="display:flex; gap:10px; flex-wrap:wrap;">
+          <button class="btn btn-primary" onclick="exportData()">📥 Export Data (Backup)</button>
+          <label class="btn btn-secondary" style="cursor:pointer;">
+            📤 Import Data
+            <input type="file" accept=".json" onchange="importData(event)" style="display:none;">
+          </label>
+        </div>
+      </div>
+
+      <div class="section-card" style="border: 1.5px solid var(--danger-light);">
+        <div class="section-header">
+          <div>
+            <div class="section-title" style="color:var(--danger);">⚠️ Zona Bahaya</div>
+            <div class="section-subtitle">Tindakan irreversible</div>
+          </div>
+          <button class="btn btn-danger" onclick="resetAllData()">🗑️ Reset Semua Data</button>
+        </div>
+      </div>
+    </div>
+
+  </main>
 </div>
 
-<!-- DASHBOARD -->
-<div id="page-dashboard" style="display:block;">
-<!-- Modal Balance Cards -->
-<div class="modal-balance-card" style="background: linear-gradient(135deg, #00539E 0%, #003d75 100%);">
-<div class="title">💳 Saldo BRImo (Digital)</div>
-<div class="big-value" id="heroBrmo">Rp 0</div>
-<div class="modal-balance-row">
-<div class="modal-balance-item">
-<div class="lbl">Modal Awal</div>
-<div class="val" id="heroBrmoAwal">Rp 0</div>
-</div>
-<div class="modal-balance-item">
-<div class="lbl">Keluar</div>
-<div class="val out" id="heroBrmoKeluar">Rp 0</div>
-</div>
-<div class="modal-balance-item">
-<div class="lbl">Masuk</div>
-<div class="val in" id="heroBrmoMasuk">Rp 0</div>
-</div>
-</div>
-</div>
-
-<div class="modal-balance-card" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%);">
-<div class="title">💵 Saldo Cash (Fisik)</div>
-<div class="big-value" id="heroCash">Rp 0</div>
-<div class="modal-balance-row">
-<div class="modal-balance-item">
-<div class="lbl">Modal Awal</div>
-<div class="val" id="heroCashAwal">Rp 0</div>
-</div>
-<div class="modal-balance-item">
-<div class="lbl">Keluar</div>
-<div class="val out" id="heroCashKeluar">Rp 0</div>
-</div>
-<div class="modal-balance-item">
-<div class="lbl">Masuk</div>
-<div class="val in" id="heroCashMasuk">Rp 0</div>
-</div>
-</div>
-</div>
-
-<!-- KPI Grid -->
-<div class="kpi-grid">
-<div class="kpi-card" style="--kpi-color: #3b82f6; --kpi-bg: #dbeafe;">
-<div class="kpi-header">
-<div class="kpi-label">Transaksi Hari Ini</div>
-<div class="kpi-icon">🔢</div>
-</div>
-<div class="kpi-value" id="kpiCount">0</div>
-<div class="kpi-trend neutral" id="kpiCountTrend">- vs kemarin</div>
-</div>
-<div class="kpi-card" style="--kpi-color: #10b981; --kpi-bg: #d1fae5;">
-<div class="kpi-header">
-<div class="kpi-label">Omzet Hari Ini</div>
-<div class="kpi-icon">💵</div>
-</div>
-<div class="kpi-value" id="kpiOmzet">Rp 0</div>
-<div class="kpi-trend neutral" id="kpiOmzetTrend">- vs kemarin</div>
-</div>
-<div class="kpi-card" style="--kpi-color: #8b5cf6; --kpi-bg: #ede9fe;">
-<div class="kpi-header">
-<div class="kpi-label">Pendapatan Produk</div>
-<div class="kpi-icon">💰</div>
-</div>
-<div class="kpi-value" id="kpiProfit">Rp 0</div>
-<div class="kpi-trend neutral">Dari penjualan produk</div>
-</div>
-<div class="kpi-card" style="--kpi-color: #f59e0b; --kpi-bg: #fef3c7;">
-<div class="kpi-header">
-<div class="kpi-label">Total Fee Hari Ini</div>
-<div class="kpi-icon">🎫</div>
-</div>
-<div class="kpi-value" id="kpiFee">Rp 0</div>
-<div class="kpi-trend neutral">Pendapatan agen</div>
-</div>
-</div>
-
-<!-- Charts -->
-<div class="charts-grid">
-<div class="chart-card">
-<div class="chart-header">
-<div>
-<div class="chart-title">Tren Transaksi 7 Hari</div>
-<div class="chart-subtitle">Pergerakan omzet dan jumlah transaksi</div>
-</div>
-</div>
-<div class="chart-container"><canvas id="trendChart"></canvas></div>
-</div>
-<div class="chart-card">
-<div class="chart-header">
-<div>
-<div class="chart-title">Distribusi Layanan</div>
-<div class="chart-subtitle">Komposisi jenis transaksi</div>
-</div>
-</div>
-<div class="chart-container"><canvas id="pieChart"></canvas></div>
-</div>
-</div>
-
-<!-- Recent Transactions -->
-<div class="section-card">
-<div class="section-header">
-<div>
-<div class="section-title">Transaksi Terakhir</div>
-<div class="section-subtitle">Lihat Semua →</div>
-</div>
-</div>
-<div class="table-wrap">
-<table>
-<thead>
-<tr>
-<th>Waktu</th>
-<th>Jenis</th>
-<th>Nama</th>
-<th>Nominal</th>
-<th>Pendapatan</th>
-<th>Status</th>
-</tr>
-</thead>
-<tbody id="recentTable"></tbody>
-</table>
-</div>
-</div>
-</div>
-
-<!-- LAYANAN -->
-<div id="page-layanan" style="display:none;">
-<div class="section-card">
-<div class="section-header">
-<div>
-<div class="section-title">🚀 Layanan Digital</div>
-<div class="section-subtitle">Transaksi perbankan & PPOB</div>
-</div>
-</div>
-<div id="menuGrid" class="menu-grid"></div>
-</div>
-<div class="section-card">
-<div class="section-header">
-<div>
-<div class="section-title">Statistik Layanan</div>
-</div>
-</div>
-<div class="table-wrap">
-<table>
-<thead>
-<tr>
-<th>Layanan</th>
-<th>Jumlah Trx</th>
-<th>Total Omzet</th>
-<th>Total Fee</th>
-</tr>
-</thead>
-<tbody id="layananTable"></tbody>
-</table>
-</div>
-</div>
-</div>
-
-<!-- PRODUK -->
-<div id="page-produk" style="display:none;">
-<div class="section-card">
-<div class="section-header">
-<div>
-<div class="section-title">📦 Produk Fisik</div>
-<div class="section-subtitle">Jual produk, pendapatan masuk cash</div>
-</div>
-<button class="btn btn-primary btn-sm" onclick="openStockModal()">📊 Atur Stok</button>
-</div>
-<div id="lowStockAlert" class="section-card" style="display:none; background: linear-gradient(135deg, #fef3c7, #fef3e2); border: 2px solid #f59e0b;">
-<div style="font-weight:700; color:#92400e; margin-bottom:10px;">⚠️ Peringatan Stok Rendah!</div>
-<div style="font-size:13px; color:#92400e; margin-bottom:12px;">Segera lakukan penambahan stok</div>
-<div id="lowStockList"></div>
-</div>
-<div id="produkGrid" class="menu-grid"></div>
-</div>
-<div class="section-card">
-<div class="section-header">
-<div>
-<div class="section-title">Statistik Produk</div>
-</div>
-</div>
-<div class="table-wrap">
-<table>
-<thead>
-<tr>
-<th>Produk</th>
-<th>Stok</th>
-<th>Terjual</th>
-<th>Total Omzet</th>
-<th>Pendapatan</th>
-</tr>
-</thead>
-<tbody id="produkTable"></tbody>
-</table>
-</div>
-</div>
-</div>
-
-<!-- ANALYTICS -->
-<div id="page-analytics" style="display:none;">
-<div class="charts-grid">
-<div class="chart-card">
-<div class="chart-header">
-<div>
-<div class="chart-title">Performa per Jenis</div>
-<div class="chart-subtitle">Perbandingan omzet dan fee/pendapatan</div>
-</div>
-</div>
-<div class="chart-container"><canvas id="barChart"></canvas></div>
-</div>
-<div class="chart-card">
-<div class="chart-header">
-<div>
-<div class="chart-title">Top 5 Terlaris</div>
-<div class="chart-subtitle">Berdasarkan jumlah transaksi</div>
-</div>
-</div>
-<div id="topList"></div>
-</div>
-</div>
-<div class="section-card">
-<div class="section-header">
-<div>
-<div class="section-title">Ringkasan Performa</div>
-</div>
-</div>
-<div class="kpi-grid">
-<div class="kpi-card">
-<div class="kpi-label">Rata-rata per Hari</div>
-<div class="kpi-value" id="avgDay">0 trx</div>
-</div>
-<div class="kpi-card">
-<div class="kpi-label">Rata-rata Nominal</div>
-<div class="kpi-value" id="avgNom">Rp 0</div>
-</div>
-<div class="kpi-card">
-<div class="kpi-label">Total Fee + Pendapatan</div>
-<div class="kpi-value" id="totalFeeAll">Rp 0</div>
-</div>
-</div>
-</div>
-</div>
-
-<!-- HISTORY -->
-<div id="page-history" style="display:none;">
-<div class="section-card">
-<div class="section-header">
-<div>
-<div class="section-title">Riwayat Transaksi</div>
-</div>
-<div class="tab-filter">
-<button class="tab-btn active" data-filter="all" onclick="setFilter('all', this)">Semua</button>
-<button class="tab-btn" data-filter="service" onclick="setFilter('service', this)">Layanan</button>
-<button class="tab-btn" data-filter="product" onclick="setFilter('product', this)">Produk</button>
-<input type="date" id="filterDate" onchange="renderHistory()" style="padding:8px 12px; border:1.5px solid var(--border); border-radius:10px; font-family:inherit;">
-<button class="btn btn-sm btn-secondary" onclick="resetFilter()">Reset</button>
-</div>
-</div>
-<div class="table-wrap">
-<table>
-<thead>
-<tr>
-<th>ID</th>
-<th>Waktu</th>
-<th>Tipe</th>
-<th>Jenis</th>
-<th>Nama</th>
-<th>Qty</th>
-<th>Nominal</th>
-<th>Pendapatan</th>
-<th>Dampak Saldo</th>
-<th>Aksi</th>
-</tr>
-</thead>
-<tbody id="historyTable"></tbody>
-</table>
-</div>
-</div>
-</div>
-
-<!-- REPORT -->
-<div id="page-report" style="display:none;">
-<div class="section-card">
-<div class="section-header">
-<div>
-<div class="section-title">📋 Laporan Bulanan</div>
-<div class="section-subtitle">Rekap transaksi, omzet, dan modal per bulan</div>
-</div>
-<div style="display:flex; gap:10px; align-items:center;">
-<input type="month" id="reportMonth" onchange="renderReport()" style="padding:8px 12px; border:1.5px solid var(--border); border-radius:10px; font-family:inherit;">
-<button class="btn btn-sm btn-primary" onclick="generatePDF()">📄 Cetak PDF</button>
-<button class="btn btn-sm btn-secondary" onclick="printReport()">🖨️ Print</button>
-</div>
-</div>
-<div id="reportSummary" class="report-summary"></div>
-<div class="table-wrap">
-<table>
-<thead>
-<tr>
-<th>Tanggal</th>
-<th>Jenis</th>
-<th>Nama</th>
-<th>Nominal</th>
-<th>Fee</th>
-<th>Dampak Saldo</th>
-</tr>
-</thead>
-<tbody id="reportTable"></tbody>
-</table>
-</div>
-</div>
-</div>
-
-<!-- SETTINGS -->
-<div id="page-settings" style="display:none;">
-<div class="section-card">
-<div class="section-header">
-<div>
-<div class="section-title">Profil & Pengaturan Agen</div>
-</div>
-</div>
-<form onsubmit="saveSettings(event)">
-<div class="form-group">
-<label>Nama Agen</label>
-<input type="text" id="setName" required>
-</div>
-<div class="form-group">
-<label>ID Agen</label>
-<input type="text" id="setId" required>
-</div>
-<div class="form-group">
-<label>No. Telepon</label>
-<input type="text" id="setPhone">
-</div>
-<div class="form-group">
-<label>Alamat Lengkap</label>
-<input type="text" id="setAddr">
-</div>
-<div class="form-group">
-<label>Modal Awal BRImo (Rp)</label>
-<input type="text" id="setModalBrmo" oninput="formatRupiahInput(this)" onkeypress="return hanyaAngka(event)">
-</div>
-<div class="form-group">
-<label>Modal Awal Cash (Rp)</label>
-<input type="text" id="setModalCash" oninput="formatRupiahInput(this)" onkeypress="return hanyaAngka(event)">
-</div>
-<button type="submit" class="btn btn-primary">💾 Simpan Pengaturan</button>
-</form>
-</div>
-
-<div class="section-card">
-<div class="section-header">
-<div>
-<div class="section-title">💰 Tambah Modal</div>
-<div class="section-subtitle">Tambahkan saldo ketika modal perlu diisi ulang</div>
-</div>
-<button class="btn btn-primary btn-sm" onclick="openAddModal()">➕ Tambah Modal Sekarang</button>
-</div>
-</div>
-
-<div class="section-card">
-<div class="section-header">
-<div>
-<div class="section-title">Informasi Kas & Modal</div>
-</div>
-</div>
-<div class="info-box">
-<div class="info-row"><span>Sisa BRImo</span><b id="infoBrmo">Rp 0</b></div>
-<div class="info-row"><span>Sisa Cash</span><b id="infoCash">Rp 0</b></div>
-<div class="info-row"><span>Total Fee Layanan</span><b id="infoFee">Rp 0</b></div>
-<div class="info-row"><span>Total Pendapatan Produk</span><b id="infoProfit">Rp 0</b></div>
-<div class="info-row"><span>Total Transaksi</span><b id="infoTotalTx">0 transaksi</b></div>
-<div class="info-row"><span>Backup Terakhir</span><b id="infoLastBackup">Belum pernah</b></div>
-</div>
-</div>
-
-<div class="section-card">
-<div class="section-header">
-<div>
-<div class="section-title">Backup & Restore Data</div>
-</div>
-</div>
-<button class="btn btn-success" onclick="exportData()" style="margin-bottom:10px;">📥 Export Data (Backup)</button>
-<input type="file" id="importFile" accept=".json" onchange="importData(event)" style="display:none;">
-<button class="btn btn-warning" onclick="document.getElementById('importFile').click()">📤 Import Data</button>
-</div>
-
-<div class="section-card" style="border: 2px solid var(--danger);">
-<div class="section-header">
-<div>
-<div class="section-title" style="color:var(--danger);">⚠️ Zona Bahaya</div>
-<div class="section-subtitle">Tindakan irreversible</div>
-</div>
-</div>
-<button class="btn btn-danger" onclick="resetAllData()">🗑️ Reset Semua Data</button>
-</div>
-</div>
-
-</div>
-</div>
-</div>
-
-<!-- MODAL TRANSAKSI -->
+<!-- ===== MODAL: TRANSAKSI ===== -->
 <div id="txModal" class="modal-overlay">
-<div class="modal">
-<div class="modal-header">
-<h2 id="modalTitle">Transaksi</h2>
-<button class="modal-close" onclick="closeModal()">×</button>
-</div>
-<div class="modal-body">
-<form id="txForm" onsubmit="submitTx(event)">
-<input type="hidden" id="txType">
-<input type="hidden" id="txItemType">
-<div class="form-group">
-<label>Nama Pelanggan</label>
-<input type="text" id="txName" placeholder="Nama pelanggan (opsional)">
-</div>
-<div id="serviceFields">
-<div class="form-group">
-<label id="labelAmount">Nominal (Rp)</label>
-<input type="text" id="txAmount" oninput="formatRupiahInput(this); calcTotal()" onkeypress="return hanyaAngka(event)" placeholder="0">
-</div>
-<div class="form-group" id="rowFee">
-<label id="labelFee">Fee / Biaya Admin (Rp)</label>
-<input type="text" id="txFee" oninput="formatRupiahInput(this); calcTotal()" onkeypress="return hanyaAngka(event)" placeholder="0">
-</div>
-</div>
-<div id="productFields" style="display:none;">
-<div class="form-group">
-<label>Harga Jual (Rp)</label>
-<input type="text" id="txSellPrice" readonly style="background:#f1f5f9;font-weight:700;">
-</div>
-<div class="form-group">
-<label>Jumlah (Qty)</label>
-<input type="number" id="txQty" value="1" min="1" oninput="calcTotal()">
-</div>
-<div id="productStockInfo" style="margin-bottom:14px;font-size:13px;"></div>
-</div>
-<div class="info-box">
-<div class="info-row"><span id="labelAmount2">Total</span><span id="sumAmount">Rp 0</span></div>
-<div class="info-row" id="rowFeeSummary"><span>Fee</span><span id="sumFee">Rp 0</span></div>
-<div class="info-row profit" id="rowProfit" style="display:none;"><span>💰 Pendapatan</span><span id="sumProfit">Rp 0</span></div>
-<div class="info-row total"><span id="labelTotal">Total</span><span id="sumTotal">Rp 0</span></div>
-</div>
-<div class="modal-info" style="background:var(--primary-light); color:var(--primary);">
-💡 <span id="modalInfoText">Info dampak transaksi</span>
-</div>
-<div class="modal-bar">
-<div class="modal-bar-label"><span>💳 Est. Sisa BRImo</span><span id="modalBarBrmo">Rp 0</span></div>
-<div class="modal-bar-track"><div id="modalBarBrmoFill" class="modal-bar-fill" style="width:50%;"></div></div>
-</div>
-<div class="modal-bar">
-<div class="modal-bar-label"><span>💵 Est. Sisa Cash</span><span id="modalBarCash">Rp 0</span></div>
-<div class="modal-bar-track"><div id="modalBarCashFill" class="modal-bar-fill" style="width:50%;"></div></div>
-</div>
-</form>
-</div>
-<div class="modal-footer">
-<button class="btn btn-secondary" onclick="closeModal()">Batal</button>
-<button class="btn btn-primary" id="btnProses" onclick="submitTx(event)">✅ Proses Transaksi</button>
-</div>
-</div>
+  <div class="modal">
+    <div class="modal-header">
+      <h2 id="modalTitle">Transaksi</h2>
+      <button class="modal-close" onclick="closeModal()">×</button>
+    </div>
+    <div class="modal-body">
+      <form id="txForm" onsubmit="submitTx(event)">
+        <input type="hidden" id="txType">
+        <input type="hidden" id="txItemType">
+
+        <div id="serviceFields">
+          <div class="form-group">
+            <label>Nama Pelanggan</label>
+            <input type="text" id="txName" placeholder="Nama pelanggan" required>
+          </div>
+
+          <div class="form-group">
+            <label id="labelAmount">Nominal (Rp)</label>
+            <input type="text" id="txAmount" placeholder="0" onkeyup="formatRupiahInput(this); calcTotal();" onkeydown="return hanyaAngka(event)" required>
+          </div>
+
+          <div class="form-group" id="rowFee" style="display:none;">
+            <label>Fee / Biaya Admin (Rp)</label>
+            <input type="text" id="txFee" placeholder="0" onkeyup="formatRupiahInput(this); calcTotal();" onkeydown="return hanyaAngka(event)">
+          </div>
+
+          <div class="form-group" id="productFields" style="display:none;">
+            <label>Jumlah (Qty)</label>
+            <input type="number" id="txQty" value="1" min="1" onchange="calcTotal();">
+          </div>
+
+          <div class="info-box">
+            <div class="info-row"><span>Total</span><b id="sumAmount">Rp 0</b></div>
+            <div class="info-row" id="rowFeeSummary" style="display:none;"><span>Fee</span><b id="sumFee">Rp 0</b></div>
+            <div class="info-row profit" id="rowProfit" style="display:none;"><span>💰 Pendapatan</span><b id="sumProfit">Rp 0</b></div>
+            <div class="info-row total"><span id="labelTotal">Total Bayar Pelanggan</span><b id="sumTotal">Rp 0</b></div>
+          </div>
+
+          <div id="productStockInfo" style="margin-top:10px; font-size:12px;"></div>
+        </div>
+
+        <div class="modal-info" style="background: var(--info-light); color: var(--info);">
+          💡 Info dampak transaksi: <span id="modalInfoText">-</span>
+        </div>
+
+        <div class="modal-bar">
+          <div class="modal-bar-label"><span>💳 Est. Sisa BRImo</span><b id="modalBarBrmo">Rp 0</b></div>
+          <div class="modal-bar-track"><div id="modalBarBrmoFill" class="modal-bar-fill" style="width:0%; background:var(--primary);"></div></div>
+        </div>
+        <div class="modal-bar">
+          <div class="modal-bar-label"><span>💵 Est. Sisa Cash</span><b id="modalBarCash">Rp 0</b></div>
+          <div class="modal-bar-track"><div id="modalBarCashFill" class="modal-bar-fill" style="width:0%; background:var(--success);"></div></div>
+        </div>
+      </form>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal()">Batal</button>
+      <button id="btnProses" class="btn btn-success" onclick="submitTx(event)">✅ Proses Transaksi</button>
+    </div>
+  </div>
 </div>
 
-<!-- MODAL TAMBAH MODAL -->
+<!-- ===== MODAL: TAMBAH MODAL ===== -->
 <div id="addModalOverlay" class="modal-overlay">
-<div class="modal">
-<div class="modal-header">
-<h2>➕ Tambah Modal</h2>
-<button class="modal-close" onclick="closeAddModal()">×</button>
-</div>
-<div class="modal-body">
-<form id="addModalForm" onsubmit="submitAddModal(event)">
-<div class="info-box" style="margin-bottom:14px;">
-<div class="info-row"><span>Sisa BRImo Saat Ini</span><b id="currentBrmoDisplay">Rp 0</b></div>
-<div class="info-row"><span>Sisa Cash Saat Ini</span><b id="currentCashDisplay">Rp 0</b></div>
-</div>
-<div class="form-group">
-<label>Jenis Modal yang Ditambah</label>
-<select id="addModalType" onchange="calcAddModal()">
-<option value="brimo">💳 Saldo BRImo (Digital)</option>
-<option value="cash">💵 Uang Cash (Fisik)</option>
-</select>
-</div>
-<div class="form-group">
-<label>Jumlah Tambah (Rp)</label>
-<input type="text" id="addModalAmount" oninput="formatRupiahInput(this); calcAddModal()" onkeypress="return hanyaAngka(event)" placeholder="0">
-</div>
-<div class="form-group">
-<label>Keterangan (Opsional)</label>
-<input type="text" id="addModalNote" placeholder="Contoh: Isi ulang modal harian">
-</div>
-<div class="modal-info" style="background:var(--success-light); color:var(--success);">
-💡 <span id="addModalPreview">Modal akan bertambah</span>
-</div>
-</form>
-</div>
-<div class="modal-footer">
-<button class="btn btn-secondary" onclick="closeAddModal()">Batal</button>
-<button class="btn btn-success" onclick="submitAddModal(event)">✅ Tambah Modal</button>
-</div>
-</div>
+  <div class="modal">
+    <div class="modal-header">
+      <h2>➕ Tambah Modal</h2>
+      <button class="modal-close" onclick="closeAddModal()">×</button>
+    </div>
+    <div class="modal-body">
+      <form id="addModalForm" onsubmit="submitAddModal(event)">
+        <div class="info-box" style="margin-bottom:14px;">
+          <div class="info-row"><span>Sisa BRImo Saat Ini</span><b id="currentBrmoDisplay">Rp 0</b></div>
+          <div class="info-row"><span>Sisa Cash Saat Ini</span><b id="currentCashDisplay">Rp 0</b></div>
+        </div>
+        <div class="form-group">
+          <label>Jenis Modal yang Ditambah</label>
+          <select id="addModalType" onchange="calcAddModal()">
+            <option value="brimo">💳 Saldo BRImo (Digital)</option>
+            <option value="cash">💵 Uang Cash (Fisik)</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Jumlah Tambah (Rp)</label>
+          <input type="text" id="addModalAmount" placeholder="0" onkeyup="formatRupiahInput(this); calcAddModal();" onkeydown="return hanyaAngka(event)" required>
+        </div>
+        <div class="form-group">
+          <label>Keterangan (Opsional)</label>
+          <input type="text" id="addModalNote" placeholder="Contoh: Isi ulang dari bank">
+        </div>
+        <div class="modal-info" style="background: var(--success-light); color: var(--success);">
+          💡 <span id="addModalPreview">Modal akan bertambah</span>
+        </div>
+      </form>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeAddModal()">Batal</button>
+      <button class="btn btn-success" onclick="submitAddModal(event)">✅ Tambah Modal</button>
+    </div>
+  </div>
 </div>
 
-<!-- MODAL ATUR STOK -->
+<!-- ===== MODAL: ATUR STOK ===== -->
 <div id="stockModal" class="modal-overlay">
-<div class="modal">
-<div class="modal-header">
-<h2>📊 Atur Stok Produk</h2>
-<button class="modal-close" onclick="closeStockModal()">×</button>
-</div>
-<div class="modal-body">
-<p style="font-size:13px; color:var(--text-muted); margin-bottom:14px;">Update jumlah stok fisik produk Anda. Stok akan otomatis berkurang saat ada penjualan.</p>
-<div id="stockEditorList"></div>
-</div>
-<div class="modal-footer">
-<button class="btn btn-secondary" onclick="closeStockModal()">Tutup</button>
-<button class="btn btn-primary" onclick="saveStock()">💾 Simpan Stok</button>
-</div>
-</div>
+  <div class="modal">
+    <div class="modal-header">
+      <h2>📊 Atur Stok Produk</h2>
+      <button class="modal-close" onclick="closeStockModal()">×</button>
+    </div>
+    <div class="modal-body">
+      <p style="font-size:13px; color:var(--text-muted); margin-bottom:14px;">
+        Update jumlah stok fisik produk Anda. Stok akan otomatis berkurang saat ada penjualan.
+      </p>
+      <div id="stockEditorList"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeStockModal()">Tutup</button>
+      <button class="btn btn-primary" onclick="saveStock()">💾 Simpan Stok</button>
+    </div>
+  </div>
 </div>
 
-<!-- MODAL EDIT TRANSAKSI -->
+<!-- ===== MODAL: EDIT TRANSAKSI ===== -->
 <div id="editModal" class="modal-overlay">
-<div class="modal">
-<div class="modal-header">
-<h2>✏️ Edit Transaksi</h2>
-<button class="modal-close" onclick="closeEditModal()">×</button>
-</div>
-<div class="modal-body">
-<form id="editForm" onsubmit="saveEditTx(event)">
-<input type="hidden" id="editTxId">
-<div class="form-group">
-<label>ID Transaksi</label>
-<div id="editTxIdDisplay" style="padding:10px; background:var(--bg); border-radius:8px; font-family:monospace; font-size:12px;"></div>
-</div>
-<div class="form-group">
-<label>Tanggal</label>
-<div id="editDateDisplay" style="padding:10px; background:var(--bg); border-radius:8px; font-size:13px;"></div>
-</div>
-<div class="form-group">
-<label>Nama Pelanggan</label>
-<input type="text" id="editName" required>
-</div>
-<div class="form-group" id="editAmountGroup">
-<label>Nominal (Rp)</label>
-<input type="text" id="editAmount" oninput="formatRupiahInput(this)" onkeypress="return hanyaAngka(event)">
-</div>
-<div class="form-group" id="editFeeGroup">
-<label>Fee (Rp)</label>
-<input type="text" id="editFee" oninput="formatRupiahInput(this)" onkeypress="return hanyaAngka(event)">
-</div>
-<div class="form-group" id="editQtyGroup">
-<label>Jumlah (Qty)</label>
-<input type="number" id="editQty" min="1">
-</div>
-</form>
-</div>
-<div class="modal-footer">
-<button class="btn btn-secondary" onclick="closeEditModal()">Batal</button>
-<button class="btn btn-primary" onclick="saveEditTx(event)">💾 Simpan Perubahan</button>
-</div>
-</div>
+  <div class="modal">
+    <div class="modal-header">
+      <h2>✏️ Edit Transaksi</h2>
+      <button class="modal-close" onclick="closeEditModal()">×</button>
+    </div>
+    <div class="modal-body">
+      <form id="editForm" onsubmit="saveEditTx(event)">
+        <input type="hidden" id="editTxId">
+        <div class="info-box" style="margin-bottom:14px;">
+          <div class="info-row"><span>ID Transaksi</span><b id="editTxIdDisplay">-</b></div>
+          <div class="info-row"><span>Tanggal</span><b id="editDateDisplay">-</b></div>
+        </div>
+        <div class="form-group">
+          <label>Nama Pelanggan</label>
+          <input type="text" id="editName" required>
+        </div>
+        <div class="form-group" id="editAmountGroup">
+          <label>Nominal (Rp)</label>
+          <input type="text" id="editAmount" onkeyup="formatRupiahInput(this)" onkeydown="return hanyaAngka(event)">
+        </div>
+        <div class="form-group" id="editFeeGroup">
+          <label>Fee (Rp)</label>
+          <input type="text" id="editFee" onkeyup="formatRupiahInput(this)" onkeydown="return hanyaAngka(event)">
+        </div>
+        <div class="form-group" id="editQtyGroup" style="display:none;">
+          <label>Jumlah (Qty)</label>
+          <input type="number" id="editQty" min="1" value="1">
+        </div>
+      </form>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeEditModal()">Batal</button>
+      <button class="btn btn-primary" onclick="saveEditTx(event)">💾 Simpan Perubahan</button>
+    </div>
+  </div>
 </div>
 
-<!-- MODAL STRUK -->
+<!-- ===== MODAL: STRUK ===== -->
 <div id="receiptModal" class="modal-overlay">
-<div class="modal">
-<div class="modal-header">
-<h2>🧾 Struk Transaksi</h2>
-<button class="modal-close" onclick="document.getElementById('receiptModal').classList.remove('active')">×</button>
-</div>
-<div class="modal-body">
-<div id="receiptContent"></div>
-</div>
-<div class="modal-footer">
-<button class="btn btn-secondary" onclick="document.getElementById('receiptModal').classList.remove('active')">Tutup</button>
-<button class="btn btn-primary" onclick="printReceipt()">🖨️ Cetak Struk</button>
-</div>
-</div>
+  <div class="modal">
+    <div class="modal-header">
+      <h2>🧾 Struk Transaksi</h2>
+      <button class="modal-close" onclick="document.getElementById('receiptModal').classList.remove('active')">×</button>
+    </div>
+    <div class="modal-body">
+      <div id="receiptContent"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="document.getElementById('receiptModal').classList.remove('active')">Tutup</button>
+      <button class="btn btn-primary" onclick="printReceipt()">🖨️ Cetak Struk</button>
+    </div>
+  </div>
 </div>
 
 <div id="printArea"></div>
